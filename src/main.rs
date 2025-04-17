@@ -5,7 +5,21 @@ use std::process::{Child, Command, Stdio};
 
 fn main() {
     loop {
-        print!("> ");
+        let show_full_path = false;
+
+        // display prompt
+        let cwd = env::current_dir().unwrap_or_else(|_| Path::new("?").to_path_buf());
+
+        let prompt = if show_full_path {
+            cwd.display().to_string()
+        } else {
+            cwd.file_name()
+                .unwrap_or(std::ffi::OsStr::new("?"))
+                .to_string_lossy()
+                .to_string()
+        };
+
+        print!("{}> ", prompt);
         let _ = io::stdout().flush();
 
         let mut input = String::new();
